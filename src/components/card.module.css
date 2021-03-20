@@ -9,6 +9,7 @@
 }
 
 .container {
+  border-radius: 6px;
   margin-top: 65px;
   padding-left: 32px;
   position: relative;

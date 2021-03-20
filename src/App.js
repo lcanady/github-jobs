@@ -3,23 +3,27 @@ import Header from "./components/Header";
 import Cards from "./components/Card";
 function App() {
   const [jobs, setJobs] = useState([]);
+  const [offset, setOffset] = useState(0);
+  const [modal, setModal] = useState(false);
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [fulltime, setFulltime] = useState(false);
 
-  const fetchJobs = async ({
-    description = "",
-    location = "",
-    fulltime = "",
-  }) => {
+  /**
+   * Fetch an object with Github jobs stored on it in object notation.
+   */
+  const fetchJobs = async () => {
+    console.log(description, location, fulltime);
     const results = await fetch(
       `https://cors.bridged.cc/https://jobs.github.com/positions.json?description=${description.replace(
-        /[ \t]+/,
+        /[ \t]+/g,
         "+"
-      )}&location=${location.replace(/[ \t]+/, "+")}&full_time=${
-        fulltime ? true : false
-      }`
+      )}&location=${location.replace(/[ \t]+/g, "+")}&full_time=${fulltime}`
     );
     const data = await results.json();
+    setModal(true);
     setJobs(data);
-    console.log(data);
+    setModal(false);
   };
 
   useEffect(() => {
@@ -28,7 +32,10 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
+      <Header
+        values={{ setDescription, setLocation, setFulltime }}
+        onClick={(ev) => fetchJobs()}
+      />
       <Cards jobs={jobs} />
     </div>
   );

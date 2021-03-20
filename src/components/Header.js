@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import styles from "./header.module.css";
 import bg from "../assets/desktop/bg-pattern-header.svg";
 import moon from "../assets/desktop/icon-moon.svg";
@@ -8,7 +8,10 @@ import location from "../assets/desktop/icon-location.svg";
 import Toggle from "./Toggle";
 import Button from "./Button";
 
-const Header = () => {
+const Header = ({ onClick, values }) => {
+  const [toggle, setToggle] = useState(false);
+
+  const { setDescription, setLocation, setFulltime } = values;
   return (
     <div classname={styles.container}>
       <h1 className={styles.logo}>devjobs</h1>
@@ -21,19 +24,30 @@ const Header = () => {
         <div className={styles.query}>
           <img src={mag} />
           <input
+            onKeyDown={(ev) => setDescription(ev.target.value)}
             type="text"
             placeholder="Filter by title, companies, expertise, etc..."
           />
         </div>
         <div className={styles.filter}>
           <img src={location} />
-          <input type="text" placeholder="Filter by location..." />
+          <input
+            type="text"
+            placeholder="Filter by location..."
+            onKeyDown={(ev) => setLocation(ev.target.value)}
+          />
         </div>
         <div className={styles.fulltime}>
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            onClick={(ev) => {
+              setFulltime(!toggle);
+              setToggle(!toggle);
+            }}
+          />
           <p>Fulltime Only</p>
         </div>
-        <Button>Search</Button>
+        <Button onClick={(ev) => onClick(ev)}>Search</Button>
       </div>
       <img
         src={bg}
