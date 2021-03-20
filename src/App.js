@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
-
+import { useEffect, useState } from "react";
+import Header from "./components/Header";
+import Cards from "./components/Card";
 function App() {
+  const [jobs, setJobs] = useState([]);
+
+  const fetchJobs = async ({
+    description = "",
+    location = "",
+    fulltime = "",
+  }) => {
+    const results = await fetch(
+      `https://cors.bridged.cc/https://jobs.github.com/positions.json?description=${description.replace(
+        /[ \t]+/,
+        "+"
+      )}&location=${location.replace(/[ \t]+/, "+")}&full_time=${
+        fulltime ? true : false
+      }`
+    );
+    const data = await results.json();
+    setJobs(data);
+    console.log(data);
+  };
+
+  useEffect(() => {
+    fetchJobs({});
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <Cards jobs={jobs} />
     </div>
   );
 }
